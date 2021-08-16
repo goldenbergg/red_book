@@ -5,7 +5,7 @@ use red_book_libs::init;
 
 fn main() {
     init::all_init();
-    let mut board = defs::SBoard {
+    let board = defs::SBoard {
         pieces: [100i32; 120],
         pawns: [0u64; 3],
         king_sq: [99i32; 2],
@@ -17,24 +17,27 @@ fn main() {
         castle_perm: 0i32,
         pos_key: 0u64,
         pce_num: [0i32; 13],
-        big_pce: [0i32; 3],
-        maj_pce: [0i32; 3],
-        min_pce: [0i32; 3],
+        big_pce: [0i32; 2],
+        maj_pce: [0i32; 2],
+        min_pce: [0i32; 2],
+        material: [0i32; 2],
+        p_list: [[0i32; 10] ; 13],
     };
+    let mut board1: [defs::SBoard; 1] = [board; 1];
     let fen1: &str = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1";
     let fen2: &str = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2";
     let fen3: &str = "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
     let fen4: &str = "r1q1brk1/ppp2ppp/3b1n2/3p1N2/8/1PNQP3/PBP2PPP/3R1RK1 w - - 10 14";
-    board::parse_fen(defs::START_FEN, &mut board);
-    board::print_board(&board);
-    board::parse_fen(fen1, &mut board);
-    board::print_board(&board);
-    board::parse_fen(fen2, &mut board);
-    board::print_board(&board);
-    board::parse_fen(fen3, &mut board);
-    board::print_board(&board);
-    board::parse_fen(fen4, &mut board);
-    board::print_board(&board);
+    board::parse_fen(defs::START_FEN, &mut board1[0]);
+    board::print_board(&board1[0]);
+    board::parse_fen(fen1, &mut board1[0]);
+    board::print_board(&board1[0]);
+    board::parse_fen(fen2, &mut board1[0]);
+    board::print_board(&board1[0]);
+    board::parse_fen(fen3, &mut board1[0]);
+    board::print_board(&board1[0]);
+    board::parse_fen(fen4, &mut board1[0]);
+    board::print_board(&board1[0]);
     
     /*
     let mut rng = Pcg64::seed_from_u64(1);
