@@ -1,11 +1,42 @@
 // main.rs
-use red_book_libs::bitboards;
+//use red_book_libs::bitboards;
 use red_book_libs::board;
 use red_book_libs::defs;
 use red_book_libs::init;
 
 fn main() {
     init::all_init();
+    let board = defs::SBoard {
+        pieces: [100i32; 120],
+        pawns: [0u64; 3],
+        king_sq: [99i32; 2],
+        side: 2i32,
+        enpas: 99i32,
+        fifty_move: 0i32,
+        ply: 0i32,
+        his_ply: 0i32,
+        castle_perm: 0i32,
+        pos_key: 0u64,
+        pce_num: [0i32; 13],
+        big_pce: [0i32; 2],
+        maj_pce: [0i32; 2],
+        min_pce: [0i32; 2],
+        material: [0i32; 2],
+        p_list: [[0i32; 10] ; 13],
+    };
+    let mut board1: [defs::SBoard; 1] = [board; 1];
+    let fen4: &str = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    board::parse_fen(fen4, &mut board1[0]);
+    board::print_board(&board1[0]);
+    assert!(board::check_board(&board1[0]) == (defs::TF::True as i32));
+    println!();
+    println!("Forced asserts...");
+    println!();
+    //board1[0].pce_num[defs::Pieces::WP as i32 as usize] -= 1;
+    unsafe { board1[0].pos_key ^= defs::SIDE_KEY; }
+    assert!(board::check_board(&board1[0]) == (defs::TF::True as i32));
+
+    /*
     let board = defs::SBoard {
         pieces: [100i32; 120],
         pawns: [0u64; 3],
@@ -37,6 +68,7 @@ fn main() {
     println!();
     println!("All P:");
     bitboards::print_bit_board(board1[0].pawns[defs::Colors::Both as usize]);
+    */
 
     /*
     let board = defs::SBoard {
