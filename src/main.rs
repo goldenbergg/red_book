@@ -1,11 +1,69 @@
 // main.rs
+use red_book_libs::attack;
 //use red_book_libs::bitboards;
 use red_book_libs::board;
 use red_book_libs::defs;
 use red_book_libs::init;
 
+pub fn show_sq_at_by_side(side: i32, pos: *const defs::SBoard) {
+    let mut rank: i32;
+    let mut file: i32;
+    let mut sq: i32;
+    println!();
+    println!();
+    unsafe { println!("Squares attacked by: {}", defs::SIDE_CHAR.chars().nth(side as usize).unwrap()); }
+    rank = defs::Rank::Rank8 as i32;
+    while rank >= (defs::Rank::Rank1 as i32) {
+        file = defs::File::FileA as i32;
+        while file <= (defs::File::FileH as i32) {
+            sq = defs::fr2_sq(file, rank);
+            if attack::sq_attacked(sq, side, pos) == (defs::TF::True as i32) {
+                print!("X");
+            }
+            else {
+                print!("-");
+            }
+            file += 1;
+        }
+        println!();
+        rank -= 1;
+    }
+    println!();
+    println!();
+}
+
 fn main() {
     init::all_init();
+    let board = defs::SBoard {
+        pieces: [100i32; 120],
+        pawns: [0u64; 3],
+        king_sq: [99i32; 2],
+        side: 2i32,
+        enpas: 99i32,
+        fifty_move: 0i32,
+        ply: 0i32,
+        his_ply: 0i32,
+        castle_perm: 0i32,
+        pos_key: 0u64,
+        pce_num: [0i32; 13],
+        big_pce: [0i32; 2],
+        maj_pce: [0i32; 2],
+        min_pce: [0i32; 2],
+        material: [0i32; 2],
+        p_list: [[0i32; 10] ; 13],
+    };
+    let mut board1: [defs::SBoard; 1] = [board; 1];
+    let fen4: &str = "8/3q1p2/8/5P2/4Q3/8/8/8 w - - 0 2 ";
+    board::parse_fen(fen4, &mut board1[0]);
+    board::print_board(&board1[0]);
+    //assert!(board::check_board(&board1[0]) == (defs::TF::True as i32));
+    println!();
+    println!();
+    println!("White Attacking:");
+    show_sq_at_by_side(defs::Colors::White as i32, &board1[0]);
+    show_sq_at_by_side(defs::Colors::Black as i32, &board1[0]);
+
+    /*
     let board = defs::SBoard {
         pieces: [100i32; 120],
         pawns: [0u64; 3],
@@ -35,6 +93,7 @@ fn main() {
     //board1[0].pce_num[defs::Pieces::WP as i32 as usize] -= 1;
     unsafe { board1[0].pos_key ^= defs::SIDE_KEY; }
     assert!(board::check_board(&board1[0]) == (defs::TF::True as i32));
+    */
 
     /*
     let board = defs::SBoard {
