@@ -1,9 +1,10 @@
 // main.rs
 use red_book_libs::attack;
 //use red_book_libs::bitboards;
-use red_book_libs::board;
+//use red_book_libs::board;
 use red_book_libs::defs;
 use red_book_libs::init;
+use red_book_libs::io;
 
 pub fn print_bin(pc_move: i32) {
     let mut index: i32;
@@ -53,6 +54,20 @@ pub fn show_sq_at_by_side(side: i32, pos: *const defs::SBoard) {
 
 fn main() {
     init::all_init();
+    let pc_move: i32;
+    let from: i32 = defs::Squares::A2 as i32;
+    let to: i32 = defs::Squares::H7 as i32;
+    let cap: i32 = defs::Pieces::WR as i32;
+    let prom: i32 = defs::Pieces::BK as i32;
+    pc_move = (from) | (to << 7) | (cap << 14) | (prom << 20);
+
+    println!("from: {} to: {} cap: {} prom: {}", defs::from_sq(pc_move), defs::to_sq(pc_move), defs::captured(pc_move), defs::promoted(pc_move));
+    println!("Algebraic from: {}", io::pr_sq(from));
+    println!("Algebraic to: {}", io::pr_sq(to));
+    println!("Algebraic move: {}", io::pr_move(pc_move));
+}
+
+    /*
     let board = defs::SBoard {
         pieces: [100i32; 120],
         pawns: [0u64; 3],
@@ -76,25 +91,7 @@ fn main() {
     board::parse_fen(fen4, &mut board1[0]);
     board::print_board(&board1[0]);
     assert!(board::check_board(&board1[0]) == (defs::TF::True as i32));
-    let pc_move: i32;
-    let from: i32 = 6;
-    let to: i32 = 12;
-    let cap: i32 = defs::Pieces::WR as i32;
-    let prom: i32 = defs::Pieces::BR as i32;
-    pc_move = (from) | (to << 7) | (cap << 14) | (prom << 20);
-    println!();
-    println!("dec: {} hex: {:X}", pc_move, pc_move);
-    print_bin(pc_move);
-    println!();
-    println!("from: {} to: {} cap: {} prom: {}", defs::from_sq(pc_move), defs::to_sq(pc_move), defs::captured(pc_move), defs::promoted(pc_move));
-    //pc_move |= defs::MFLAGPS;
-    if (pc_move & defs::MFLAGPS) > 0 {
-        println!("is PST: YES");
-    }
-    else {
-        println!("is PST: NO");
-    }
-}
+    */
 
     /*
     let board = defs::SBoard {
