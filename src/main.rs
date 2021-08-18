@@ -5,6 +5,25 @@ use red_book_libs::board;
 use red_book_libs::defs;
 use red_book_libs::init;
 
+pub fn print_bin(pc_move: i32) {
+    let mut index: i32;
+    println!("As binary:");
+    index = 27;
+    while index >= 0 {
+        if ((1 << index) & pc_move) > 0 {
+            print!("1");
+        }
+        else {
+            print!("0");
+        }
+        if (index != 28) && (index % 4 == 0) {
+            print!(" ");
+        }
+        index -= 1;
+    }
+    println!();
+}
+
 pub fn show_sq_at_by_side(side: i32, pos: *const defs::SBoard) {
     let mut rank: i32;
     let mut file: i32;
@@ -53,6 +72,50 @@ fn main() {
         p_list: [[0i32; 10] ; 13],
     };
     let mut board1: [defs::SBoard; 1] = [board; 1];
+    let fen4: &str = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    board::parse_fen(fen4, &mut board1[0]);
+    board::print_board(&board1[0]);
+    assert!(board::check_board(&board1[0]) == (defs::TF::True as i32));
+    let pc_move: i32;
+    let from: i32 = 6;
+    let to: i32 = 12;
+    let cap: i32 = defs::Pieces::WR as i32;
+    let prom: i32 = defs::Pieces::BR as i32;
+    pc_move = (from) | (to << 7) | (cap << 14) | (prom << 20);
+    println!();
+    println!("dec: {} hex: {:X}", pc_move, pc_move);
+    print_bin(pc_move);
+    println!();
+    println!("from: {} to: {} cap: {} prom: {}", defs::from_sq(pc_move), defs::to_sq(pc_move), defs::captured(pc_move), defs::promoted(pc_move));
+    //pc_move |= defs::MFLAGPS;
+    if (pc_move & defs::MFLAGPS) > 0 {
+        println!("is PST: YES");
+    }
+    else {
+        println!("is PST: NO");
+    }
+}
+
+    /*
+    let board = defs::SBoard {
+        pieces: [100i32; 120],
+        pawns: [0u64; 3],
+        king_sq: [99i32; 2],
+        side: 2i32,
+        enpas: 99i32,
+        fifty_move: 0i32,
+        ply: 0i32,
+        his_ply: 0i32,
+        castle_perm: 0i32,
+        pos_key: 0u64,
+        pce_num: [0i32; 13],
+        big_pce: [0i32; 2],
+        maj_pce: [0i32; 2],
+        min_pce: [0i32; 2],
+        material: [0i32; 2],
+        p_list: [[0i32; 10] ; 13],
+    };
+    let mut board1: [defs::SBoard; 1] = [board; 1];
     let fen4: &str = "8/3q1p2/8/5P2/4Q3/8/8/8 w - - 0 2 ";
     board::parse_fen(fen4, &mut board1[0]);
     board::print_board(&board1[0]);
@@ -62,6 +125,7 @@ fn main() {
     println!("White Attacking:");
     show_sq_at_by_side(defs::Colors::White as i32, &board1[0]);
     show_sq_at_by_side(defs::Colors::Black as i32, &board1[0]);
+    */
 
     /*
     let board = defs::SBoard {
@@ -265,4 +329,3 @@ fn main() {
     }
     println!();
     */
-}
