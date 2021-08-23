@@ -1,10 +1,11 @@
 // main.rs
 use red_book_libs::attack;
 //use red_book_libs::bitboards;
-//use red_book_libs::board;
+use red_book_libs::board;
 use red_book_libs::defs;
 use red_book_libs::init;
 use red_book_libs::io;
+use red_book_libs::movegen;
 
 pub fn print_bin(pc_move: i32) {
     let mut index: i32;
@@ -54,6 +55,49 @@ pub fn show_sq_at_by_side(side: i32, pos: *const defs::SBoard) {
 
 fn main() {
     init::all_init();
+    let board = defs::SBoard {
+        pieces: [100i32; 120],
+        pawns: [0u64; 3],
+        king_sq: [99i32; 2],
+        side: 2i32,
+        enpas: 99i32,
+        fifty_move: 0i32,
+        ply: 0i32,
+        his_ply: 0i32,
+        castle_perm: 0i32,
+        pos_key: 0u64,
+        pce_num: [0i32; 13],
+        big_pce: [0i32; 2],
+        maj_pce: [0i32; 2],
+        min_pce: [0i32; 2],
+        material: [0i32; 2],
+        p_list: [[0i32; 10] ; 13],
+    };
+    let mut board1: [defs::SBoard; 1] = [board; 1];
+    let _pawn_moves_w: &str = "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1";
+    let _pawn_moves_b: &str = "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1";
+    let _knights_kings: &str = "5k2/1n6/4n3/6N1/8/3N4/8/5K2 b - - 0 1";
+    let _rooks: &str = "6k1/8/5r2/8/1nR5/5N2/8/6K1 b - - 0 1";
+    let _queens: &str = "6k1/8/4nq2/8/1nQ5/5N2/1N6/6K1 b - - 0 1";
+    let _bishops: &str = "6k1/1b6/4n3/8/1n4B1/1B3N2/1N6/2b3K1 b - - 0 1";
+    let _castle1: &str = "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
+    let castle2: &str = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    board::parse_fen(castle2, &mut board1[0]);
+    //board::print_board(&board1[0]);
+    let pc_move = defs::SMove {
+        pc_move: 0i32,
+        score: 0i32,
+    };
+    let list = defs::SMoveList {
+        moves: [pc_move; defs::MAXPOSITIONMOVES as usize],
+        count: 0i32,
+    };
+    let mut list1: [defs::SMoveList; 1] = [list; 1];
+    movegen::generate_all_moves(&board1[0], &mut list1[0]);
+    io::print_move_list(&list1[0]);
+}
+
+    /*
     let pc_move: i32;
     let from: i32 = defs::Squares::A2 as i32;
     let to: i32 = defs::Squares::H7 as i32;
@@ -62,10 +106,13 @@ fn main() {
     pc_move = (from) | (to << 7) | (cap << 14) | (prom << 20);
 
     println!("from: {} to: {} cap: {} prom: {}", defs::from_sq(pc_move), defs::to_sq(pc_move), defs::captured(pc_move), defs::promoted(pc_move));
-    println!("Algebraic from: {}", io::pr_sq(from));
-    println!("Algebraic to: {}", io::pr_sq(to));
-    println!("Algebraic move: {}", io::pr_move(pc_move));
-}
+    let s: &str = &io::pr_sq(from)[..];
+    println!("Algebraic from: {}", s);
+    let s: &str = &io::pr_sq(to)[..];
+    println!("Algebraic to: {}", s);
+    let s: &str = &io::pr_move(pc_move)[..];
+    println!("Algebraic move: {}", s);
+    */
 
     /*
     let board = defs::SBoard {
